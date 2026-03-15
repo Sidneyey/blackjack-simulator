@@ -52,7 +52,7 @@ function dealCards() {
     dealerCards.push(deck.pop())
 }
 
-startGame() {
+function startGame() {
     createDeck()
     shuffleDeck()
     dealCards()
