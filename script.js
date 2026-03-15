@@ -58,6 +58,9 @@ function startGame() {
     shuffleDeck()
     dealCards()
 
+
+    document.getElementById("playerCards").innerText = playerCards
+    document.getElementById("dealerCards").innerText = dealCards
     console.log(playerCards)
     console.log(dealerCards)
 
