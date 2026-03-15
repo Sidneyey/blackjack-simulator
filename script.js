@@ -1,12 +1,16 @@
 function hit() {
     playerCards.push(deck.pop())
+    updateCards()
 }
+
 function stand() {
     alert("JavaScript działa!")
 }
+
 function double() {
     alert("JavaScript działa!")
 }
+
 function split() {
     alert("JavaScript działa!")
 }
@@ -16,22 +20,14 @@ let playerCards = []
 let dealerCards = []
 
 function createDeck() {
-
     let suits = ["♠", "♥", "♦", "♣"]
-    let values = [
-        "A","2","3","4","5","6","7","8","9","10","J","Q","K"
-    ]
+    let values = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
 
     deck = []
 
     for (let suit of suits) {
         for (let value of values) {
-
-            deck.push({
-                suit: suit,
-                value: value
-            })
-
+            deck.push({ suit: suit, value: value })
         }
     }
 }
@@ -41,7 +37,6 @@ function shuffleDeck() {
 }
 
 function dealCards() {
-
     playerCards = []
     dealerCards = []
 
@@ -60,10 +55,9 @@ function startGame() {
 }
 
 function updateCards() {
-
     // Gracz
     const playerDiv = document.getElementById("playerCards")
-    playerDiv.innerHTML = ""  // czyścimy div
+    playerDiv.innerHTML = ""
 
     playerCards.forEach(card => {
         let cardDiv = document.createElement("div")
