@@ -1,15 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Blackjack Simulator</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<h1>Blackjack Simulator</h1>
+<body class="bg-green-800 text-white flex flex-col items-center p-10">
 
-<button onclick="alert('Game coming soon')">
-    Start Game
-</button>
+<h1 class="text-4xl font-bold mb-10">
+    Blackjack Simulator
+</h1>
+
+<div class="space-x-4">
+
+    <button class="bg-blue-500 px-6 py-3 rounded-lg hover:bg-blue-600">
+        Hit
+    </button>
+
+    <button class="bg-red-500 px-6 py-3 rounded-lg hover:bg-red-600">
+        Stand
+    </button>
+
+    <button class="bg-gray-500 px-6 py-3 rounded-lg hover:bg-gray-600">
+        New Game
+    </button>
+
+</div>
 
 </body>
 </html>
