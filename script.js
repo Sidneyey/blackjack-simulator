@@ -52,20 +52,34 @@ function dealCards() {
     dealerCards.push(deck.pop())
 }
 
-function startGame() {
-
+startGame() {
     createDeck()
     shuffleDeck()
     dealCards()
+    updateCards()
+}
 
-    // Wyświetlenie kart gracza
-    document.getElementById("playerCards").innerText =
-        playerCards.map(card => card.value + card.suit).join(" ")
+function updateCards() {
 
-    // Wyświetlenie kart dealera
-    document.getElementById("dealerCards").innerText =
-        dealerCards.map(card => card.value + card.suit).join(" ")
+    // Gracz
+    const playerDiv = document.getElementById("playerCards")
+    playerDiv.innerHTML = ""  // czyścimy div
 
-    console.log(playerCards)
-    console.log(dealerCards)
+    playerCards.forEach(card => {
+        let cardDiv = document.createElement("div")
+        cardDiv.innerText = card.value + card.suit
+        cardDiv.className = "bg-white text-black p-2 rounded shadow"
+        playerDiv.appendChild(cardDiv)
+    })
+
+    // Dealer
+    const dealerDiv = document.getElementById("dealerCards")
+    dealerDiv.innerHTML = ""
+
+    dealerCards.forEach(card => {
+        let cardDiv = document.createElement("div")
+        cardDiv.innerText = card.value + card.suit
+        cardDiv.className = "bg-white text-black p-2 rounded shadow"
+        dealerDiv.appendChild(cardDiv)
+    })
 }
