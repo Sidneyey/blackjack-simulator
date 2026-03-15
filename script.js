@@ -58,10 +58,14 @@ function startGame() {
     shuffleDeck()
     dealCards()
 
+    // Wyświetlenie kart gracza
+    document.getElementById("playerCards").innerText =
+        playerCards.map(card => card.value + card.suit).join(" ")
 
-    document.getElementById("playerCards").innerText = playerCards
-    document.getElementById("dealerCards").innerText = dealCards
+    // Wyświetlenie kart dealera
+    document.getElementById("dealerCards").innerText =
+        dealerCards.map(card => card.value + card.suit).join(" ")
+
     console.log(playerCards)
     console.log(dealerCards)
-
 }
