@@ -2,44 +2,418 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Blackjack Simulator</title>
+    <meta name="description" content="Improve your blackjack skills with a clean, no-signup trainer. Practice basic strategy, soft hands, and pairs — perfect for learning and avoiding common mistakes.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Blackjack Basic Strategy Trainer – Practice Online for Free">
+    <meta property="og:description" content="Improve your blackjack skills with a fast, clean blackjack strategy trainer. Practice hard hands, soft hands, and pairs – no signup, no ads.">
+    <meta property="og:url" content="https://basicstrategy.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://basicstrategy.app/og-image.png">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Blackjack Basic Strategy Trainer – Practice and Improve</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RLQCSM0TE6"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RLQCSM0TE6');
+</script>
+    <link rel="canonical" href="https://basicstrategy.app/">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
 </head>
 
-<body class="flex flex-col items-center p-10
-             bg-[url('images/blackjack_table.jpg')]
-             bg-cover bg-center bg-no-repeat min-h-screen">
-
-<h1 class="text-4xl font-bold mb-10">
-    Blackjack Simulator
+<body>
+<h1 class="visually-hidden">
+    Blackjack Basic Strategy Trainer – Practice Blackjack Online for Free
 </h1>
-
-<div class="space-x-4">
-
-    <button onclick="hit()" class="bg-blue-500 px-6 py-3 rounded-lg hover:bg-blue-600">
-        Hit
+<p class="visually-hidden">
+    Practice blackjack basic strategy for free. Select hard hands, soft hands, or pairs — no account, no ads.
+</p>
+<div id="menu-container" class="collapsed">
+    <button id="menu-toggle" aria-label="Toggle menu">
+        <span></span>
     </button>
+    <nav id="menu">
+        <!-- Count Cards Section -->
+        <div class="menu-section">
+            <h3>Settings</h3>
+            <label class="menu-item">
+                <input type="checkbox" id="count-cards" checked>
+                Count Score
+            </label>
+            <label class="menu-item">
+                <input type="checkbox" id="auto-replay">
+                Auto Replay (when correct)
+            </label>
+        </div>
 
-    <button onclick="stand()" class="bg-red-500 px-6 py-3 rounded-lg hover:bg-red-600">
-        Stand
-    </button>
+        <!-- Game Mode Section -->
+        <div class="menu-section game-mode-section">
+            <h3 class="section-title">Game Mode</h3>
+            <div class="mode-options">
+                <label class="mode-option">
+                    <input type="radio" name="mode" value="game" />
+                    <span class="option-label">Normal Game</span>
+                </label>
 
-    <button onclick="double()" class="bg-gray-500 px-6 py-3 rounded-lg hover:bg-gray-600">
-        Double
-    </button>
+                <label class="mode-option practice">
+                    <div class="practice-header">
+                        <input type="radio" name="mode" value="practice" checked />
+                        <span class="option-label">&nbsp; Practice Mode</span>
+                    </div>
+                    <select id="practice-mode" onchange="updatePracticeMode(this.value)">
+                        <option value="basic">Basic</option>
+                        <option value="pairs">Pairs</option>
+                        <option value="soft">Soft Hands</option>
+                    </select>
+                </label>
+            </div>
+        </div>
 
-    <button onclick="split()" class="bg-blue-500 px-6 py-3 rounded-lg">
-        Split
-    </button>
+        <!-- Variant Selector -->
+        <div class="menu-section">
+            <h3>Blackjack Variant</h3>
+            <label class="menu-item">
+                <input type="radio" name="variant" value="european" checked>
+                ENHC (European)
+            </label>
+            <label class="menu-item">
+                <input type="radio" name="variant" value="american">
+                NHPC (American)
+            </label>
+        </div>
+        <div class="menu-section">
+            <h3>Strategy Guide</h3>
+            <button id="show-strategy" class="menu-item">
+                View Basic Strategy Table
+            </button>
+        </div>
 
-
+        <!-- Debug Section -->
+        <div class="menu-section">
+            <h3>Debug</h3>
+            <button id="debug-deal" class="menu-item">Debug Deal</button>
+        </div>
+    </nav>
 </div>
 
-<div id="playerCards" class="flex space-x-2"></div>
-<div id="dealerCards" class="flex space-x-2"></div>
+
+<dialog id="debug-dialog">
+    <h3>Blackjack Basic Strategy Practice Tool</h3>
+    <form>
+        <label>
+            Dealer's Cards (comma-separated, e.g., A, 10):<br>
+            <input type="text" id="debug-dealer-cards" required>
+        </label>
+        <label>
+            Player's Cards (comma-separated, e.g., 8, 9):<br>
+            <input type="text" id="debug-player-cards" required>
+        </label>
+        <div>
+            <button type="button" onclick="handleDebugDeal()">Deal</button>
+            <button type="button" onclick="document.getElementById('debug-dialog').close()">Cancel</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="main-content">
+
+
+
+    <div id="game-area">
+        <div id="dealer">
+            <h2>Dealer Cards</h2>
+            <div id="dealer-cards"></div>
+            <p id="dealer-score"></p>
+        </div>
+
+        <div id="player">
+            <h2>Player Hand</h2>
+            <div id="player-hands">
+                <!-- Player hands will be dynamically added here -->
+            </div>
+            <p id="player-score"></p>
+        </div>
+    </div>
+
+    <p id="feedback"></p>
+
+    <div id="controls">
+        <button id="hit-button">Hit</button>
+        <button id="stand-button">Stand</button>
+        <button id="double-button">Double</button>
+        <button id="split-button">Split</button>
+    </div>
+</div>
+<div id="strategy-overlay">
+    <div class="strategy-content">
+        <button id="close-strategy" class="close-btn">×</button>
+        <div class="strategy-table" id="european-strategy">
+            <table>
+
+                <thead>
+                <tr class="section-header">
+                    <!-- Top-left header cell changed to “Hard” -->
+                    <th class="soft-header">Hard</th>
+                    <th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                    <th>7</th><th>8</th><th>9</th><th>10</th><th>A</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- HARD HANDS -->
+                <tr><td>5–8</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td></tr>
+                <tr>
+                    <td>9</td>
+                    <td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>10–11</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>13–16</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr><td>17–21</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td></tr>
+
+                <!-- SOFT HANDS -->
+                <tr class="section-header">
+                    <td class="soft-header">Soft</td>
+                    <td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                    <td>7</td><td>8</td><td>9</td><td>10</td><td>A</td>
+                </tr>
+                <tr>
+                    <td>S13/S14</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S15/S16</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S17</td>
+                    <td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S18</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S19</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-D">D</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+                <tr>
+                    <td>S20–S21</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+
+                <!-- PAIRS -->
+                <tr class="section-header">
+                    <td class="pairs-header">Pairs</td>
+                    <td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                    <td>7</td><td>8</td><td>9</td><td>10</td><td>A</td>
+                </tr>
+                <tr>
+                    <td>2/2 &amp; 3/3</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr><td>4/4</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td></tr>
+                <tr>
+                    <td>5/5</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>6/6</td>
+                    <td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>7/7</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>8/8</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>9/9</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-S">S</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+                <tr><td>10/10</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td></tr>
+                <tr>
+                    <td>A/A</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-H">H</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="strategy-table" id="american-strategy" style="display: none;">
+            <table>
+
+                <thead>
+                <tr class="section-header">
+                    <th class="soft-header">Hard</th>
+                    <th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                    <th>7</th><th>8</th><th>9</th><th>10</th><th>A</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- HARD HANDS -->
+                <tr><td>5–8</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td></tr>
+                <tr>
+                    <td>9</td>
+                    <td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>13–16</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr><td>17–21</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td></tr>
+
+                <!-- SOFT HANDS -->
+                <tr class="section-header">
+                    <td class="soft-header">Soft</td>
+                    <td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                    <td>7</td><td>8</td><td>9</td><td>10</td><td>A</td>
+                </tr>
+                <tr>
+                    <td>S13/S14</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S15/S16</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S17</td>
+                    <td class="cell-H">H</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S18</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>S19</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-D">D</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+                <tr>
+                    <td>S20–S21</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                    <td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+
+                <!-- PAIRS -->
+                <tr class="section-header">
+                    <td class="pairs-header">Pairs</td>
+                    <td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                    <td>7</td><td>8</td><td>9</td><td>10</td><td>A</td>
+                </tr>
+                <tr>
+                    <td>2/2 &amp; 3/3</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr><td>4/4</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td></tr>
+                <tr>
+                    <td>5/5</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td>
+                    <td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-D">D</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>6/6</td>
+                    <td class="cell-H">H</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>7/7</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td><td class="cell-H">H</td>
+                </tr>
+                <tr>
+                    <td>8/8</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                </tr>
+                <tr>
+                    <td>9/9</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-S">S</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-S">S</td><td class="cell-S">S</td>
+                </tr>
+                <tr><td>10/10</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td><td class="cell-S">S</td></tr>
+                <tr>
+                    <td>A/A</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                    <td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td><td class="cell-P">P</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="strategy-legend">
+            <span class="cell-H">H</span> Hit
+            <span class="cell-S">S</span> Stand
+            <span class="cell-D">D</span> Double
+            <span class="cell-P">P</span> Split
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<button id="play-again" style="display: none;">Play Again</button>
+
+<!-- Accuracy counter (remove inline styles since CSS now controls its appearance) -->
+<div id="accuracy-counter">
+    Basic Strategy Accuracy: 0/0 (0%)
+</div>
+
 
 <script src="script.js"></script>
-
 </body>
 </html>

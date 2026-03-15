@@ -1,0 +1,1149 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0D5C2F;
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+#menu-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 0; /* Changed from 60px */
+  z-index: 1000;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#menu-container.expanded {
+  width: 240px;
+  background: #1a1a1a; /* Moved background here */
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+}
+
+#menu-toggle {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+  background: #2a2a2a;
+  z-index: 1001;
+  border-radius: 5px;
+}
+
+#menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: white;
+    position: relative;
+    transition: all 0.3s;
+}
+
+#menu-toggle span::before,
+#menu-toggle span::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: white;
+    transition: all 0.3s;
+}
+
+#menu-toggle span::before { transform: translateY(-6px); }
+#menu-toggle span::after { transform: translateY(6px); }
+
+#menu-container.expanded #menu-toggle span {
+    background: transparent;
+}
+
+#menu-container.expanded #menu-toggle span::before {
+    transform: rotate(45deg);
+}
+
+#menu-container.expanded #menu-toggle span::after {
+    transform: rotate(-45deg);
+}
+
+#menu {
+    padding: 20px;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s 0.1s;
+}
+
+#menu-container.expanded #menu {
+    opacity: 1;
+}
+
+.menu-section {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 1rem;
+}
+
+.menu-section h3 {
+    color: #2EA985;
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #ddd;
+}
+
+.menu-item:hover {
+    background: #2a2a2a;
+    color: white;
+}
+
+#game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;          /* centers and limits on large screens */
+    margin: 0 auto;            /* horizontal centering */
+    padding: 0 1rem;           /* gutter on small screens */
+}
+
+
+#dealer, #player {
+    text-align: center;
+}
+
+#dealer-cards, #player-cards {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.card {
+    width: calc(20vw);         /* fluid based on viewport width */
+    max-width: 120px;
+    aspect-ratio: 2 / 3;       /* keeps proportion */
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+
+.card-value {
+    font-size: 50px;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.card-suit {
+    font-size: 36px;
+    color: black;
+}
+
+.heart, .diamond {
+    color: red;
+}
+
+#player-hands {
+  /* — layout as before — */
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min-content;
+  gap: 1rem;
+
+  /* — force full viewport width — */
+  width: 100vw;
+  box-sizing: border-box;
+  /* Pull it back so it’s centered despite any parent padding */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  /* — scrolling only when needed — */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+
+  /* — optional snap — */
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.5rem;
+}
+
+
+.player-hand {
+    flex: 0 0 auto;
+	scroll-snap-align: start;
+    min-width: 140px;
+    margin: 0 10px;
+}
+
+.player-hand-cards {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.player-hand-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#controls {
+  position: relative;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 90%;
+  max-width: 600px;
+  padding: 0 10px;
+}
+
+
+button {
+    padding: 18px 36px;      /* vertical | horizontal */
+    font-size: 22px; /* Slightly larger text */
+    font-weight: bold;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2EA985, #299A7D);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100% ;
+    margin: 0 auto; /* Center individual buttons */
+	box-sizing: border-box;
+    text-align: center;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #2C9C79, #299A7D);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#play-again {
+    margin-top: 50px;
+    display: none;
+    background: linear-gradient(135deg, #ff6f61, #ff3b2f);
+    width: 100%;             /* ADD THIS BACK */
+    box-sizing: border-box;  /* ADD THIS BACK */
+}
+#play-again:hover {
+  background: linear-gradient(135deg, #ff5a4d, #ff2a1f);
+}
+
+#controls button {
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 20px;
+    max-width: none;
+}
+
+@media (max-width: 768px) {
+    #controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        width: 95%;
+		position: relative;
+    }
+
+    #controls button {
+        padding: 16px 18px;
+        font-size: 18px;
+        min-width: 120px;
+    }
+}
+
+#feedback {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+	text-align: center;
+}
+
+#debug-dialog {
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background: #f0f0f0;
+    left: -50%;
+    top: -50%;
+}
+
+#debug-dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#debug-dialog input {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+#debug-dialog button {
+    padding: 5px 10px;
+    margin: 5px;
+}
+
+#debug-deal {
+    margin-top: 30px;
+}
+
+.menu-item {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.game-mode-section {
+    margin-top: 20px;
+}
+
+.section-title {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.radio-option {
+    display: block;
+    margin: 10px 0;
+}
+
+.practice-dropdown {
+    margin-left: 8px;
+    padding: 4px;
+}
+
+.debug-button {
+    margin-top: 20px;
+}
+
+#score-tracker {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+}
+
+#accuracy-counter {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #C0C0C0;
+  background: rgba(0,0,0,0.8);
+  border-radius: 8px;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+
+#menu-toggle {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+  background: #1a1a1a; /* Changed from #2a2a2a to match menu */
+  z-index: 1001;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+#menu-toggle:hover {
+  background: #2a2a2a; /* Slightly lighter on hover */
+}
+
+/* adjust inner menu padding so it sits nicely */
+#menu-container #menu {
+    padding: 20px;
+}
+
+
+#menu-container.expanded ~ #main-content {
+    padding-left: 240px;
+    width: calc(100% - 240px);
+}
+
+/* Center Game Elements */
+#game-area,
+#controls,
+#play-again,
+#feedback {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+/* Hide Menu When Collapsed */
+#menu-container:not(.expanded) #menu {
+    display: none !important;
+}
+
+/* Menu Scrolling Fix */
+#menu-container {
+    overflow: hidden;
+}
+
+#menu {
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 60px;
+}
+
+@media (max-width: 768px) {
+  /* MOBILE MENU FINAL FIXED VERSION */
+  #menu-container {
+    pointer-events: none;
+    width: 100% !important;
+    height: 100vh !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: transparent !important;
+    overflow: hidden;
+    z-index: 1000;
+  }
+
+  #menu-toggle {
+    pointer-events: all !important;
+    left: auto !important;
+    right: 12px !important;
+    top: 12px !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: #2a2a2a !important;
+    border: 2px solid #3a3a3a !important;
+    z-index: 1002;
+    transform: none !important;
+    position: fixed !important;
+    border-radius: 8px;
+  }
+
+  #menu-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: white;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -1px 0 0 -12px;
+    transition: all 0.3s;
+  }
+
+  #menu-toggle span::before,
+  #menu-toggle span::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: white;
+    transition: all 0.3s;
+    left: 0;
+  }
+
+  #menu-toggle span::before {
+    transform: translateY(-6px);
+  }
+  #menu-toggle span::after {
+    transform: translateY(6px);
+  }
+
+  #menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100vh;
+    max-height: 100vh;
+    background: #1a1a1a;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    overflow-y: auto;
+    padding: 60px 20px 20px !important;
+    box-sizing: border-box;
+    z-index: 1001;
+    margin: 0;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
+  #menu-container.expanded #menu {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  #menu::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #1a1a1a;
+    z-index: -1;
+  }
+
+  /* ORIGINAL “X” TRANSFORM RULES REMOVED/HIDDEN */
+  /* New classic “X” styling on open */
+  #menu-container.expanded #menu-toggle span {
+    /* hide the middle bar */
+    background: transparent !important;
+  }
+  #menu-container.expanded #menu-toggle span::before,
+  #menu-container.expanded #menu-toggle span::after {
+    /* center each bar */
+    left: 50%;
+    top: 50%;
+    transform-origin: center center;
+    width: 24px;
+    height: 2px;
+  }
+  #menu-container.expanded #menu-toggle span::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  #menu-container.expanded #menu-toggle span::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  #menu-container.expanded #menu-toggle {
+    background: #333 !important;
+    box-shadow: 0 0 0 2px #2EA985;
+  }
+
+  #accuracy-counter {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: #C0C0C0;
+    font-size: 18px;
+    z-index: 1000;
+    display: block !important;
+    transform: none !important;
+    text-align: center !important;
+
+    /* make it a rectangle */
+    border-radius: 0 !important;
+    border-radius: 0 !important;
+
+    /* allow taps to go through to buttons underneath */
+    pointer-events: none !important;
+  }
+
+  #play-again {
+    width: auto !important;
+    max-width: 200px !important;   /* cap its maximum width */
+    padding: 16px 32px !important;  /* a bit less tall and wide */
+    margin: 20px auto !important;   /* center it with vertical breathing room */
+    box-sizing: border-box;
+  }
+  #feedback {
+    width: 95% !important;     /* same as your #controls width on mobile */
+    max-width: none !important;
+    margin: 10px auto !important;  /* vertical gap + auto-center */
+  }
+  #menu,
+  .strategy-content {
+    height: 100dvh;                    /* uses the real visible viewport height */
+    overflow-y: auto;                  /* vertical scrolling only */
+    -webkit-overflow-scrolling: touch;  /* smooth, iOS momentum scrolling */
+    overscroll-behavior: contain;      /* stops inner bounce from moving the page */
+
+    /* extra bottom padding so you can scroll past the last row */
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  }
+}
+
+
+#menu-container.expanded #menu-toggle {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  left: auto; /* Override default left position */
+  background: #2a2a2a;
+}
+
+/* Add padding to menu to prevent overlap */
+#menu {
+  padding: 50px 20px 20px 20px !important; /* Top padding for close button */
+}
+
+
+
+@media (min-width: 769px) {
+  /* DESKTOP-SPECIFIC IMPROVEMENTS */
+  #menu-container {
+    overflow: hidden;
+  }
+
+  #menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    padding: 50px 20px 20px 20px !important;
+    opacity: 1 !important; /* Override mobile opacity */
+  }
+
+  #menu-container.expanded #menu {
+    transform: translateX(0);
+  }
+  }
+
+/* Custom checkboxes/radios with perfect alignment */
+.radio-option,
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2EA985;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0;
+  position: relative;
+  flex-shrink: 0;
+}
+
+input[type="radio"] {
+  border-radius: 50%;
+}
+
+/* Checked states */
+input[type="checkbox"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #2EA985;
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+}
+
+input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: #2EA985;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Focus states */
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: 2px solid #2EA985;
+  outline-offset: 2px;
+}
+
+@media (min-width: 769px) {
+  /* Control grid layout */
+  #controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(100px, 1fr)); /* Control column width */
+    gap: 10px !important; /* Fixed middle gap */
+    max-width: 400px; /* Control overall width */
+  }
+
+  /* Button sizing */
+  #controls button {
+    width: 100%;
+    min-width: 120px; /* Minimum size */
+    max-width: 200px; /* Maximum expand size */
+    padding: 16px 20px;
+    font-size: 18px;
+    margin: 0 auto; /* Center in grid cells */
+  }
+
+  /* Play Again positioning */
+  #play-again {
+    width: 240px;
+    margin: 50px auto 0 !important; /* Centered with top spacing */
+  }
+}
+
+/* Ensure option backgrounds match the menu */
+.menu-section.game-mode-section {
+  padding: 1rem 0;
+}
+.game-mode-section .section-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  color: #2EA985;
+  text-transform: uppercase;
+}
+.mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #1a1a1a; /* match menu background */
+  padding: 1rem;
+  border-radius: 8px;
+  /* allow wrapping so select can break onto new line */
+  flex-wrap: wrap;
+}
+
+.mode-option input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #2EA985;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+.mode-option input[type="radio"]:checked::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: #2EA985;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.mode-option input[type="radio"]:focus {
+  outline: none;
+}
+.mode-option .option-label {
+  flex: 1;
+  font-size: 1rem;
+  color: #ddd;
+}
+.mode-option select {
+  flex-shrink: 0; /* prevent the dropdown from shrinking */
+  margin-top: 0.5rem;
+  min-width: 140px;
+  padding: 6px 10px;
+  background: #1a1a1a;
+  color: #ddd;
+  border: 1px solid #2EA985;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+
+
+
+
+
+
+/* HIDE DEBUG*/
+
+.menu-section:last-child {
+  display: none !important;
+}
+
+#debug-dialog, [id^="debug"], .debug-button {
+  display: none !important;
+}
+
+
+
+
+
+#menu-container.expanded {
+  /* raise above 1000 so it always covers the counter */
+  z-index: 1100;
+}
+
+/* Strategy Table Overlay Styles */
+/* Strategy Table Overlay Styles */
+#strategy-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.97);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+#strategy-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.strategy-content {
+  position: relative;
+  height: 100vh;
+  margin: 0;
+  background: #1a1a1a;
+  border-radius: 0;
+  overflow: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column; /* vertical layout */
+  align-items: center;     /* center children horizontally */
+  box-sizing: border-box;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;
+}
+
+
+
+.close-btn {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  color: #2EA985;
+  font-size: 36px;
+  background: rgba(30,30,30,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2001;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.strategy-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.strategy-table th,
+.strategy-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #333;
+  word-break: break-word;
+  max-width: 15vw;
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .strategy-content {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    padding: 60px 10px 20px;
+  }
+
+  .close-btn {
+    top: 15px;
+    right: 15px;
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .strategy-table {
+    font-size: 12px;
+  }
+
+  .strategy-table th,
+  .strategy-table td {
+    padding: 8px;
+    max-width: none;
+    min-width: auto !important;
+  }
+
+  td[colspan="10"], td[colspan="8"] {
+    font-size: 0.9em;
+  }
+}
+
+/* 1) First‐row headers with normal weight (match the rest) */
+.strategy-table th {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-weight: normal;
+}
+
+/* 2) Default cells */
+.strategy-table td {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+/* 3) Action cells (only “D” forced black) */
+.cell-H {
+  background: #2EA985 !important;
+  color: #000;
+}
+.cell-S {
+  background: #606060 !important;
+  color: #fff;
+}
+.cell-D {
+  background: #FFD700 !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+.cell-P {
+  background: #FF6347 !important;
+  color: #000;
+}
+
+/* 4) Section labels */
+.soft-header,
+.pairs-header {
+  background: #333 !important;
+  color: #2EA985 !important;
+  font-size: 1.1em;
+  padding: 15px !important;
+}
+
+/* 1) Make the legend a flex container, with gap between each item group */
+.strategy-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0; /* we'll handle spacing via margins */
+  margin-top: 24px;
+}
+
+/* Icon boxes: small padding, margin-right for icon→label, margin-left for label→next icon */
+.strategy-legend .cell-H,
+.strategy-legend .cell-S,
+.strategy-legend .cell-D,
+.strategy-legend .cell-P {
+  display: inline-block;
+  padding: 4px 6px;      /* smaller icon padding */
+  border-radius: 4px;
+  font-weight: bold;
+  margin-right: 4px;     /* space between icon and its label */
+  margin-left: 24px;     /* space between previous label and this icon */
+}
+
+/* Remove extra left-margin on the very first icon */
+.strategy-legend span:first-of-type {
+  margin-left: 0;
+}
+
+/* Icon colors & text colors */
+.strategy-legend .cell-H { background: #2EA985; color: #fff; }
+.strategy-legend .cell-S { background: #606060; color: #fff; }
+.strategy-legend .cell-D { background: #FFD700; color: #000; }
+.strategy-legend .cell-P { background: #FF6347; color: #fff; }
+
+/* — Mobile tweaks — */
+@media (max-width: 768px) {
+  .strategy-legend {
+    font-size: 14px;       /* overall legend text smaller */
+	margin-top: 16px;
+  }
+  .strategy-legend .cell-H,
+  .strategy-legend .cell-S,
+  .strategy-legend .cell-D,
+  .strategy-legend .cell-P {
+    padding: 3px 4px;      /* even smaller padding on phones */
+    margin-right: 3px;     /* less space to the label */
+    margin-left: 16px;     /* less between items */
+  }
+}
+
+
+
+/* 1) Container makes space for both labels */
+.strategy-table {
+  position: relative;
+  padding-top: 2.5rem;    /* room above the table */
+}
+
+/* 2) “Player” badge – BEFORE the table content */
+.strategy-table::before {
+  content: "Player";
+  position: absolute;
+  top: 0.5rem;
+  left: 10%;             /* centers above column 1 (≈½ of 1/11th) */
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.05);
+  color: #2EA985;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 3) “Dealer up-card” badge – AFTER the table content */
+.strategy-table::after {
+  content: "Dealer up-card";
+  position: absolute;
+  top: 0.5rem;
+  left: 58%;              /* centers above columns 2–A (≈ (1+10/2)/11*100 ) */
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.05);
+  color: #2EA985;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 4) Table sits naturally below */
+.strategy-table table {
+  margin-top: 0;
+  width: 100%;
+}
+
+/* 5) Mobile tweak */
+@media (max-width: 480px) {
+  .strategy-table {
+    padding-top: 2rem;
+  }
+  .strategy-table::before,
+  .strategy-table::after {
+    top: 0.4rem;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+  .strategy-table::after {
+    left: 55%;
+  }
+}
+
+
+
+
+
+
+
+/* Reduce vertical spacing between "Normal Game" and "Practice Mode" */
+.mode-options {
+  gap: 0.3rem !important;           /* ↓ space between .mode-option rows */
+}
+
+.mode-option {
+  padding: 0.4rem 0.75rem !important; /* ↓ vertical padding inside each row */
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap; /* keeps it out of flow */
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  /* Ensure the overlay itself never scrolls the page */
+  #strategy-overlay {
+    overscroll-behavior: contain;
+  }
+
+  /* Make the strategy‐content fill the dynamic viewport, scroll internally */
+  #strategy-overlay .strategy-content {
+    height: 100dvh !important;                  /* full visible height */
+    overflow-y: auto !important;                /* allow vertical scroll */
+    -webkit-overflow-scrolling: touch !important;/* smooth momentum */
+    overscroll-behavior: contain !important;    /* contain bounce */
+    padding-bottom: calc(env(safe-area-inset-bottom,0px) + 16px) !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  #player-hands {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    width: 100vw;
+    box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+	padding-bottom: 10px !important;
+  }
+}
+
+
+
