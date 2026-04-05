@@ -397,6 +397,75 @@ button:active {
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+#chips {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: #C0C0C0;
+    font-size: 18px;
+    z-index: 1000;
+    display: block !important;
+    transform: none !important;
+    text-align: center !important;
+
+    /* make it a rectangle */
+    border-radius: 0 !important;
+    border-radius: 0 !important;
+
+    /* allow taps to go through to buttons underneath */
+    pointer-events: none !important;
+  }
+
+  #running-count {
+      position: fixed !important;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 0;
+      background: rgba(0, 0, 0, 0.8);
+      color: #C0C0C0;
+      font-size: 18px;
+      z-index: 1000;
+      display: block !important;
+      transform: none !important;
+      text-align: center !important;
+
+      /* make it a rectangle */
+      border-radius: 0 !important;
+      border-radius: 0 !important;
+
+      /* allow taps to go through to buttons underneath */
+      pointer-events: none !important;
+    }
+
+    #true-count {
+        position: fixed !important;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 0;
+        background: rgba(0, 0, 0, 0.8);
+        color: #C0C0C0;
+        font-size: 18px;
+        z-index: 1000;
+        display: block !important;
+        transform: none !important;
+        text-align: center !important;
+
+        /* make it a rectangle */
+        border-radius: 0 !important;
+        border-radius: 0 !important;
+
+        /* allow taps to go through to buttons underneath */
+        pointer-events: none !important;
+      }
+
 #running-count {
   position: fixed;
   bottom: 250px;
