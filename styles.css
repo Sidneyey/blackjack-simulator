@@ -384,7 +384,7 @@ button:active {
 #chips {
   position: fixed;
   bottom: 150px;
-  left: 25%;
+  left: 20%;
   transform: translateX(-50%);
   padding: 12px 24px;
   font-size: 20px;
@@ -469,7 +469,7 @@ button:active {
 #running-count {
   position: fixed;
   bottom: 250px;
-  left: 75%;
+  left: 80%;
   transform: translateX(-50%);
   padding: 12px 24px;
   font-size: 20px;
@@ -484,8 +484,8 @@ button:active {
 
 #true-count {
   position: fixed;
-  bottom: 125px;
-  left: 75%;
+  bottom: 100px;
+  left: 80%;
   transform: translateX(-50%);
   padding: 12px 24px;
   font-size: 20px;
